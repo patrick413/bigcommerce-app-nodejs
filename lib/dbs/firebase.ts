@@ -37,6 +37,7 @@ export async function setStore(session: SessionProps) {
         scope,
         user: { id },
     } = session;
+    console.log(accessToken, scope)
     // Only set on app install or update
     if (!accessToken || !scope) return null;
 

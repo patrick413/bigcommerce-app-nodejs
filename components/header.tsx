@@ -2,15 +2,20 @@ import { Box, Tabs } from '@bigcommerce/big-design';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InnerHeader from './innerHeader';
-
 export const TabIds = {
-    HOME: 'home',
-    PRODUCTS: 'products',
+    CONFIG: 'config',
+    // COLLECTION: 'collection',
+    STYLE: 'styles',
+    ADVANCE: 'advance',
+    // PRODUCTS:'products'
 };
 
 export const TabRoutes = {
-    [TabIds.HOME]: '/',
-    [TabIds.PRODUCTS]: '/products',
+    [TabIds.CONFIG]: '/',
+    // [TabIds.COLLECTION]: '/collection',
+    [TabIds.STYLE]: '/styles',
+    [TabIds.ADVANCE]: '/advance',
+    // [TabIds.PRODUCTS]: '/products',
 };
 
 const HeaderlessRoutes = [
@@ -22,6 +27,7 @@ const HeaderlessRoutes = [
 
 const InnerRoutes = [
     '/products/[pid]',
+    '/collection/[cid]',
 ];
 
 const HeaderTypes = {
@@ -35,7 +41,7 @@ const Header = () => {
     const [headerType, setHeaderType] = useState<string>(HeaderTypes.GLOBAL);
     const router = useRouter();
     const { pathname } = router;
-
+    
     useEffect(() => {
         if (InnerRoutes.includes(pathname)) {
             // Use InnerHeader if route matches inner routes
@@ -50,17 +56,19 @@ const Header = () => {
             setActiveTab(tabKey ?? '');
             setHeaderType(HeaderTypes.GLOBAL);
         }
-
     }, [pathname]);
 
     useEffect(() => {
         // Prefetch products page to reduce latency (doesn't prefetch in dev)
-        router.prefetch('/products');
+        router.prefetch('/collection');
     });
 
     const items = [
-        { ariaControls: 'home', id: TabIds.HOME, title: 'Home' },
-        { ariaControls: 'products', id: TabIds.PRODUCTS, title: 'Products' },
+        { ariaControls: 'home', id: TabIds.CONFIG, title: 'Configuration' },
+        // { ariaControls: 'collection', id: TabIds.COLLECTION, title: 'Collections'},
+        { ariaControls: 'styles', id: TabIds.STYLE, title: 'Style Customization' },
+        { ariaControls: 'advance', id: TabIds.ADVANCE, title: 'Advance Options' },
+        // { ariaControls: 'products', id: TabIds.PRODUCTS, title: 'products' },
     ];
 
     const handleTabClick = (tabId: string) => {

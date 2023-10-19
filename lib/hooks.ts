@@ -16,34 +16,76 @@ async function fetcher(url: string, query: string) {
     return res.json();
 }
 
+
+// Define a fetcher function to make the API request
+const collectionFetcher = async (url,apiKey, collection, id = 'export', method = 'GET') => {
+    // if (!['GET', 'POST', 'PUT'].includes(method.toUpperCase())) {
+    //     throw new Error('Invalid HTTP method');
+    // }
+  const response = await fetch(`${url}/collections/${collection}/documents/${id}`, {
+    method: method,
+    headers: {
+      'X-TYPESENSE-API-KEY': apiKey,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+
+  const responseText = await response.text();
+  const lines = responseText.split('\n').filter(Boolean); // Split by newline and remove empty lines
+
+  const data = lines.map((line) => JSON.parse(line));
+  return data;
+};
+
 // Reusable SWR hooks
 // https://swr.vercel.app/
-export function useProducts() {
+export function useChannel() {
     const { context } = useSession();
     const params = new URLSearchParams({ context }).toString();
     // Request is deduped and cached; Can be shared across components
-    const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
-
+    const { data, error, mutate: mutateList } = useSWR(context ? ['/api/channels', params] : null, fetcher);
     return {
         summary: data,
         isLoading: !data && !error,
         error,
+        mutateList
     };
 }
 
-export function useProductList(query?: QueryParams) {
+export function useCredentials() {
     const { context } = useSession();
-    const params = new URLSearchParams({ ...query, context }).toString();
-
-    // Use an array to send multiple arguments to fetcher
-    const { data, error, mutate: mutateList } = useSWR(context ? ['/api/products/list', params] : null, fetcher);
-
+    const params = new URLSearchParams({ context }).toString();
+    // Request is deduped and cached; Can be shared across components
+    const { data, error, mutate: mutateList } = useSWR(context ? ['/api/credentials', params] : null, fetcher);
     return {
-        list: data?.data,
-        meta: data?.meta,
+        summary: data,
         isLoading: !data && !error,
         error,
-        mutateList,
+        mutateList
+    };
+}
+
+export function useCollectionList(url:string, apiKey:string, activeCollection,id) {
+    // Use SWR to fetch data
+    const { data, error, mutate: mutateList} = useSWR([url, apiKey, activeCollection,id], collectionFetcher);
+    return {
+        list: data,
+        isLoading: !data && !error,
+        error,
+        mutateList
+    };
+}
+
+export function useCollection(activeCollection,id,method) {
+    // Use SWR to fetch data
+    const { data, error, mutate: mutateList} = useSWR([API_URL, activeCollection, id, method], collectionFetcher);
+    return {
+        list: data,
+        isLoading: !data && !error,
+        error,
+        mutateList
     };
 }
 
@@ -96,5 +138,34 @@ export const useShippingAndProductsInfo = (orderId: number) => {
         order: data,
         isLoading: !data && !error,
         error,
+    };
+}
+
+export function useProducts() {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+    // Request is deduped and cached; Can be shared across components
+    const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
+
+    return {
+        summary: data,
+        isLoading: !data && !error,
+        error,
+    };
+}
+
+export function useProductList(query?: QueryParams) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ ...query, context }).toString();
+
+    // Use an array to send multiple arguments to fetcher
+    const { data, error, mutate: mutateList } = useSWR(context ? ['/api/products/list', params] : null, fetcher);
+
+    return {
+        list: data?.data,
+        meta: data?.meta,
+        isLoading: !data && !error,
+        error,
+        mutateList,
     };
 }

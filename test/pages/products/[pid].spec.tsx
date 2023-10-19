@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import ProductInfo from '@pages/products/[pid]';
+import ProductInfo from '@pages/collection/[cid]';
 import { render, screen } from '@test/utils';
 
 jest.mock('@lib/hooks', () => require('@mocks/hooks'));

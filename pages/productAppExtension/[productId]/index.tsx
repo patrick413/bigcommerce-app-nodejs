@@ -14,7 +14,7 @@ const ProductAppExtension = () => {
 
     if (isLoading) return <Loading />;
     if (error) return <ErrorMessage error={error} />;
-  
+
     return (
         <>
             <Panel header="Basic Information" marginBottom="small">

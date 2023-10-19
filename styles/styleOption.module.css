@@ -1,0 +1,12 @@
+.inputMargin{
+    margin-left: 0px;
+}
+.tableStyle{
+    margin-top: 30px;
+    width: 100%;
+    text-align: left;
+    font-weight:600
+}
+.labelColumn{
+    max-width: 25px;
+}

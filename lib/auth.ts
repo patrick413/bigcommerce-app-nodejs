@@ -12,7 +12,6 @@ if (API_URL && LOGIN_URL) {
     apiConfig.apiUrl = API_URL;
     apiConfig.loginUrl = LOGIN_URL;
 }
-
 // Create BigCommerce instance
 // https://github.com/bigcommerce/node-bigcommerce/
 const bigcommerce = new BigCommerce({
@@ -68,7 +67,6 @@ export async function getSession({ query: { context = '' } }: NextApiRequest) {
     }
 
     const accessToken = await db.getStoreToken(storeHash);
-
     return { accessToken, storeHash, user };
 }
 
@@ -76,7 +74,6 @@ export async function getSession({ query: { context = '' } }: NextApiRequest) {
 export function encodePayload({ user, owner, ...session }: SessionProps) {
     const contextString = session?.context ?? session?.sub;
     const context = contextString.split('/')[1] || '';
-
     return jwt.sign({ context, user, owner }, JWT_KEY, { expiresIn: '24h' });
 }
 // Verifies JWT for getSession (product APIs)

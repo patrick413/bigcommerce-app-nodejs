@@ -15,7 +15,7 @@ const ProductInfo = () => {
     const { description, is_visible: isVisible, name, price, type } = product ?? {};
     const formData = { description, isVisible, name, price, type };
 
-    const handleCancel = () => router.push('/products');
+    const handleCancel = () => router.push('/collections');
 
     const handleSubmit = async (data: FormData) => {
         try {

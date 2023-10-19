@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'styled-components';
 import Header from '../components/header';
 import SessionProvider from '../context/session';
+import ConfigProvider from 'context/config';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
     return (
@@ -15,7 +16,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             >
                 <Header />
                 <SessionProvider>
-                    <Component {...pageProps} />
+                    <ConfigProvider>
+                        <Component {...pageProps} />
+                    </ConfigProvider>
                 </SessionProvider>
             </Box>
         </ThemeProvider>
